@@ -187,7 +187,7 @@ def get_mint_info():
     # which returns the user-inputted 2FA code. By default
     # the default Python `input` function is used.
     mint = mintapi.Mint(email_user, mint_pwd, mfa_method='email',
-                        headless=True, mfa_input_callback=read_email_from_gmail)
+                        headless=True)#, mfa_input_callback=read_email_from_gmail)
 
     # Initiate an account refresh
     mint.initiate_account_refresh()
@@ -216,7 +216,8 @@ if __name__ == "__main__":
     df.to_csv(csv_name, index=False)
 
     today = datetime.datetime.now()
-    one_month = today.replace(month=today.month - 1)
+    last_month = today.replace(day=1) - datetime.timedelta(days=1)
+    one_month = today.replace(month=last_month.month, year=last_month.year)
     df = df[df.date >= one_month]
     df.sort_values(by=['transaction_type', 'amount', 'category'], ascending=[True, False, False]).reset_index(
         inplace=True)
