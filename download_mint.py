@@ -197,7 +197,7 @@ def get_mint_info():
 
     nw = mint.get_net_worth()
 
-    hoa_account = 'BUSINESS CHECKING'
+    hoa_account = 'Wells Fargo Simple Business Checking'
 
     # Get transactions
     df = mint.get_transactions(include_investment=False) # as pandas dataframe
@@ -206,10 +206,10 @@ def get_mint_info():
 
 
 if __name__ == "__main__":
-    df, net_worth = get_mint_info()
+    df_original, net_worth = get_mint_info()
 
-    df.sort_values(by='date', inplace=True, ascending=False)
-    df = df[['date', 'description', 'original_description', 'amount', 'transaction_type', 'category']]
+    df_original.sort_values(by='date', inplace=True, ascending=False)
+    df = df_original[['date', 'description', 'original_description', 'amount', 'transaction_type', 'category']]
 
     df.sort_values(by=['date'], inplace=True, ascending=False)
     csv_name = 'hoa_account.csv'
@@ -219,6 +219,9 @@ if __name__ == "__main__":
     last_month = today.replace(day=1) - datetime.timedelta(days=1)
     one_month = today.replace(month=last_month.month, year=last_month.year)
     df = df[df.date >= one_month]
+    if df.empty:
+        print(net_worth)
+        raise TypeError("no data for one month prior")
     df.sort_values(by=['transaction_type', 'amount', 'category'], ascending=[True, False, False]).reset_index(
         inplace=True)
 
